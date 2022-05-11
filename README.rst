@@ -26,7 +26,14 @@ A population projection engine
 Features
 --------
 
-* TODO
+* Calculates population projection segmented by age over the years
+         * Inputs:
+                 * Specific year census database (place, age, population)
+                 * Database of people born over the years (year, place, births)
+                 * Projected population database not segmented by age over the years (year, place, population)
+         * Output:
+                 * Population projection segmented by age database (year, place, age, population)
+                 * Errors report on combination of "place, age, year" unable to forecast (year, place, age, error_msg)
 
 Credits
 -------

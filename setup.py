@@ -10,9 +10,9 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = ['Click>=7.0', 'pandas>=1.4']
 
-test_requirements = ['pytest>=3', ]
+test_requirements = ['pytest>=3']
 
 setup(
     author="derycck",
@@ -43,7 +43,7 @@ setup(
     packages=find_packages(include=['popro', 'popro.*']),
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/derycck/popro',
+    url='https://github.com/aiboxlab-pne/popro',
     version='0.1.0',
     zip_safe=False,
 )
