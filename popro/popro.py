@@ -243,15 +243,15 @@ def projection_all(df_datasets, year_census):
 
 
 def validate_dataset_columns(dataframe, dataset_name, columns_required):
-    """_summary_
+    """Validated if the datasets have the required columns.
 
     Args:
-        dataframe (DataFrame): _description_
-        dataset_name (str): _description_
-        columns_required (set): _description_
+        dataframe (DataFrame): Dataset to be validated.
+        dataset_name (str): Dataset name.
+        columns_required (set): List of the required columns.
 
     Raises:
-        ValueError: _description_
+        ValueError: Dataset does not have the required columns.
     """
 
     if columns_required.issubset(set(list(dataframe.columns))):
@@ -276,18 +276,39 @@ def validate_dataset_births(df_births):
     )
 
 
+def save_report(list_dict, path_report):
+
+    df_report = pd.DataFrame(list_dict)
+    df_report.to_csv(path_report, index=False)
+    return df_report
+
+
 class Popro:
+    """Popro, a population projection engine.
+
+    Args:
+        path_census (str):
+            Path to the census dataset in csv file.
+            Columns required: age, population, place, year
+        path_births (str):
+            Path to the births dataset in csv file.
+            Columns required: year, place, births
+        path_population (str):
+            Path to the population dataset in csv file.
+            Columns required: year, place, population
+        year_census (int):
+            Year of the census dataset.
+    """
+
     def __init__(self, path_census, path_births, path_population, year_census):
         self.path_census = path_census
         self.path_births = path_births
         self.path_population = path_population
         self.year_census = year_census
 
-        self.df_census = pd.read_csv(path_census)  # age,population,place,year
-        self.df_births = pd.read_csv(path_births)  # year,place,births
-        self.df_population = pd.read_csv(
-            path_population
-        )  # year,place,population
+        self.df_census = pd.read_csv(path_census)
+        self.df_births = pd.read_csv(path_births)
+        self.df_population = pd.read_csv(path_population)
         self.datasets = {
             "df_census": self.df_census,
             "df_births": self.df_births,
@@ -297,6 +318,19 @@ class Popro:
         self.report_error = [{}]
 
     def project(self, year, place, age, verbose=False):
+        """Projects a single combination of place and age.
+
+        Args:
+            year (int): Year of projection.
+            place (str): Projection place.
+            age (int): Projection age.
+            verbose (bool, optional): Show algebraic composition of the
+            calculation. Defaults to False.
+
+        Returns:
+            int: Projected population.
+        """
+
         quantity = get_projection(
             self.datasets,
             year,
@@ -310,9 +344,20 @@ class Popro:
     def project_all(
         self, output_report_projection_path="", output_report_error_path=""
     ):
+        """Projects all possible combinations of place and age.
+
+        Args:
+            output_report_projection_path (str, optional): Defaults to "".
+                CSV file path of the projection report to be generated.
+            output_report_error_path (str, optional): Defaults to "".
+                CSV file path from the error report to be generated.
+                Displays which combinations of the year and locality it was not
+                possible to project and the reason.
+        Returns:
+            list: The projection report in list of dict.
+                  Ready to be used as input in a pandas dataframe object.
         """
-        return: DataFrame
-        """
+
         dict_reports = projection_all(self.datasets, self.year_census)
         self.report_projection = dict_reports["report_projection"]
         self.report_error = dict_reports["report_error"]
@@ -322,10 +367,3 @@ class Popro:
         if output_report_error_path != "":
             save_report(self.report_error, output_report_error_path)
         return self.report_projection
-
-
-def save_report(list_dict, path_report):
-
-    df_report = pd.DataFrame(list_dict)
-    df_report.to_csv(path_report, index=False)
-    return df_report
