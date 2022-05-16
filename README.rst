@@ -6,8 +6,8 @@ popro
 .. image:: https://img.shields.io/pypi/v/popro.svg
         :target: https://pypi.python.org/pypi/popro
 
-.. image:: https://img.shields.io/travis/derycck/popro.svg
-        :target: https://travis-ci.com/derycck/popro
+.. image:: https://github.com/aiboxlab-pne/popro/actions/workflows/python-app.yml/badge.svg
+        :target: https://github.com/aiboxlab-pne/popro/actions/workflows/python-app.yml
 
 .. image:: https://readthedocs.org/projects/popro/badge/?version=latest
         :target: https://popro.readthedocs.io/en/latest/?version=latest
