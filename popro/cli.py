@@ -9,18 +9,68 @@ import popro
 
 
 @click.command()
-@click.option("-ic", "--input_census", "path_census", type=click.STRING)
-@click.option("-ib", "--input_birth", "path_births", type=click.STRING)
 @click.option(
-    "-ip", "--input_population", "path_population", type=click.STRING
+    "-ic",
+    "--input_census",
+    "path_census",
+    type=click.STRING,
+    help="Path to the census dataset in csv file. "
+    + "Columns required: age, population, place, year",
 )
-@click.option("-yc", "--year_census", "year_census", type=click.INT)
-@click.option("-y", "--year", "year", type=click.INT)
-@click.option("-p", "--place", "place", type=click.INT)
-@click.option("-a", "--age", "age", type=click.INT)
-@click.option("-o", "--output", "output_path", type=click.STRING, default="")
-@click.option("-oe", "--outerr", "output_error", type=click.STRING, default="")
-@click.option("-v", "--verbose", default=False)
+@click.option(
+    "-ib",
+    "--input_birth",
+    "path_births",
+    type=click.STRING,
+    help="Path to the births dataset in csv file. "
+    + "Columns required: year, place, births",
+)
+@click.option(
+    "-ip",
+    "--input_population",
+    "path_population",
+    type=click.STRING,
+    help="Path to the population dataset in csv file. "
+    + "Columns required: year, place, population",
+)
+@click.option(
+    "-yc",
+    "--year_census",
+    "year_census",
+    type=click.INT,
+    help="Year of the census dataset.",
+)
+@click.option(
+    "-y", "--year", "year", type=click.INT, help="Year of projection."
+)
+@click.option(
+    "-p", "--place", "place", type=click.INT, help="Projection place."
+)
+@click.option("-a", "--age", "age", type=click.INT, help="Projection age.")
+@click.option(
+    "-o",
+    "--output",
+    "output_path",
+    type=click.STRING,
+    default="",
+    help="CSV file path of the projection report to be generated.",
+)
+@click.option(
+    "-oe",
+    "--outerr",
+    "output_error",
+    type=click.STRING,
+    default="",
+    help="CSV file path from the error report to be generated."
+    + "Displays which combinations of the year and locality it was not "
+    + "possible to project and the reason.",
+)
+@click.option(
+    "-v",
+    "--verbose",
+    default=False,
+    help="Show the algebraic expression of the calculus",
+)
 def main(
     path_census,
     path_births,

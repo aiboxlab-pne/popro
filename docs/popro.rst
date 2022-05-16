@@ -4,13 +4,9 @@ popro package
 Submodules
 ----------
 
-popro.cli module
-----------------
-
-.. automodule:: popro.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. click:: popro.cli:main
+   :prog: popro.cli
+   :nested: full
 
 popro.popro module
 ------------------

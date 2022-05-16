@@ -324,8 +324,8 @@ class Popro:
             year (int): Year of projection.
             place (str): Projection place.
             age (int): Projection age.
-            verbose (bool, optional): Show algebraic composition of the
-            calculation. Defaults to False.
+            verbose (bool, optional): Show the algebraic expression of the
+            calculus. Defaults to False.
 
         Returns:
             int: Projected population.
