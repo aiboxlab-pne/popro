@@ -105,6 +105,7 @@ First we will try with an age and year whose birth of the group is prior to the 
 
    112.18905472636816
 
+
 Now let's find out the projection for a group born after the census.
 
 .. code-block:: python
@@ -157,7 +158,30 @@ Cool, but it would be better to export to a CSV, wouldn't it?
 
 Report generated!
 
+CLI
+-----
 
+It is also possible to make projections via command line. Let's repeat the same projections:
+
+.. code-block:: text
+
+    $ popro --input_census census.csv --input_birth birth.csv --input_population population.csv --year_census 2010 --year 2012 --place ny --age 3
+
+.. code-block:: text
+
+    112.18905472636816
+
+.. code-block:: text
+
+    $ popro --input_census census.csv --input_birth birth.csv --input_population population.csv --year_census 2010 --year 2015 --place ny --age 4
+
+.. code-block:: text
+
+    94.71428571428572
+
+.. code-block:: text
+
+    $ popro --input_census census.csv --input_birth birth.csv --input_population population.csv --year_census 2010 --output projection_report.csv
 
 .. _`Court of Auditors`: https://www.tcesc.tc.br/
 .. _`Memo. DAE n° 020/2021`: https://www.tcesc.tc.br/sites/default/files/2021-06/Metodologia%20Estima%C3%A7%C3%A3o%20Populacional.pdf
