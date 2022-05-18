@@ -2,7 +2,7 @@
 Popro - Population Projection
 
 """
-import os
+from os.path import exists
 
 import pandas as pd
 
@@ -13,7 +13,7 @@ def get_pop_place_census_age(df_census, place, age):
         (df_census["place"] == place) & (df_census["age"] == age)
     ]
 
-    # raose amount registers
+    # test amount registers found
     if df_census_age.shape[0] == 0:
         raise ValueError(
             "Did not find records at the Census dataset for Place: {}, Age: {}".format(
@@ -300,7 +300,24 @@ class Popro:
             Year of the census dataset.
     """
 
-    def __init__(self, path_census, path_births, path_population, year_census):
+    def __init__(
+        self,
+        path_census: str,
+        path_births: str,
+        path_population: str,
+        year_census: int,
+    ):
+
+        # ensure input files exists
+        if not exists(path_census):
+            raise FileNotFoundError(f'"{path_census}" does not exist')
+        if not exists(path_births):
+            raise FileNotFoundError(f'"{path_births}" does not exist')
+        if not exists(path_population):
+            raise FileNotFoundError(f'"{path_population}" does not exist')
+        if not isinstance(year_census, int):
+            raise TypeError('"year_census" must be an integer')
+
         self.path_census = path_census
         self.path_births = path_births
         self.path_population = path_population

@@ -5,7 +5,7 @@ from email.policy import default
 
 import click
 
-import popro
+from popro import popro
 
 
 @click.command()
@@ -44,7 +44,7 @@ import popro
     "-y", "--year", "year", type=click.INT, help="Year of projection."
 )
 @click.option(
-    "-p", "--place", "place", type=click.INT, help="Projection place."
+    "-p", "--place", "place", type=click.STRING, help="Projection place."
 )
 @click.option("-a", "--age", "age", type=click.INT, help="Projection age.")
 @click.option(
@@ -96,7 +96,7 @@ def main(
         engine.project_all(output_path, output_error)
     else:
         population = engine.project(year, place, age, verbose)
-        print(population)
+        click.echo(population)
 
 
 if __name__ == "__main__":
