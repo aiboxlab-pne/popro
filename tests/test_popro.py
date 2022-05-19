@@ -2,12 +2,75 @@
 
 """Tests for `popro` package."""
 
+import os
+import shutil
+from pathlib import Path
+
 import pandas as pd
 import pytest
 from click.testing import CliRunner
 
 from popro import cli, popro
 
+
+def create_data_folder():
+
+    delete_data_folder()
+    folder_path = os.path.join('tests', 'data')
+    Path(folder_path).mkdir(exist_ok=True)
+
+
+def delete_data_folder():
+
+    folder_path = os.path.join('tests', 'data')
+    shutil.rmtree(folder_path, ignore_errors=True)
+
+
+class Test_popro_class:
+    def test_input_file_not_found(self):
+        create_data_folder()
+        files = ['census.csv', 'births.csv', 'population.csv']
+        for file in files:
+            open(os.path.join('tests', 'data', file), 'w').close()
+        with pytest.raises(FileNotFoundError):
+            input_file_name = ['censusx.csv', 'births.csv', 'population.csv']
+            input_files = [os.path.join('tests', 'data', file)
+                           for file in input_file_name]
+
+            popro.Popro(path_census=input_files[0],
+                        path_births=input_files[1],
+                        path_population=input_files[2],
+                        year_census=2010)
+
+        with pytest.raises(FileNotFoundError):
+            popro.Popro(path_census='census.csv',
+                        path_births='birthsx.csv',
+                        path_population='population.csv',
+                        year_census=2010)
+
+        with pytest.raises(FileNotFoundError):
+            popro.Popro(path_census='census.csv',
+                        path_births='births.csv',
+                        path_population='populationx.csv',
+                        year_census=2010)
+        delete_data_folder()
+
+    def test_input_file_empty(self):
+
+        create_data_folder()
+        files = ['census.csv', 'births.csv', 'population.csv']
+        for file in files:
+            open(os.path.join('tests', 'data', file), 'w').close()
+        input_file_name = ['census.csv', 'births.csv', 'population.csv']
+        input_files = [os.path.join('tests', 'data', file)
+                       for file in input_file_name]
+        with pytest.raises(pd.errors.EmptyDataError):
+            popro.Popro(path_census=input_files[0],
+                        path_births=input_files[1],
+                        path_population=input_files[2],
+                        year_census=2010)
+
+        delete_data_folder()
 
 class Test_get_project_engine:
     def test_via_births_2019_8(self):
