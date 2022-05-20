@@ -2,7 +2,7 @@
 Popro - Population Projection
 
 """
-from os.path import exists
+from os.path import exists, splitext
 
 import pandas as pd
 
@@ -283,6 +283,12 @@ def save_report(list_dict, path_report):
     return df_report
 
 
+def is_csv(file_path):
+
+    extension = splitext(file_path)[1][1:]
+    return extension == 'csv'
+
+
 class Popro:
     """Popro, a population projection engine.
 
@@ -308,13 +314,13 @@ class Popro:
         year_census: int,
     ):
 
-        # ensure input files exists
-        if not exists(path_census):
-            raise FileNotFoundError(f'"{path_census}" does not exist')
-        if not exists(path_births):
-            raise FileNotFoundError(f'"{path_births}" does not exist')
-        if not exists(path_population):
-            raise FileNotFoundError(f'"{path_population}" does not exist')
+        # ensure input files are csv and exists
+        for file_path in [path_census, path_births, path_population]:
+            if not is_csv(file_path):
+                raise TypeError(f'"{file_path}" must be a csv file')
+            if not exists(path_census):
+                raise FileNotFoundError(f'"{file_path}" does not exist')
+
         if not isinstance(year_census, int):
             raise TypeError('"year_census" must be an integer')
 

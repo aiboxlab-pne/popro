@@ -72,6 +72,53 @@ class Test_popro_class:
 
         delete_data_folder()
 
+    def test_input_file_wrong_extension(self):
+
+        # wrong input census file
+        create_data_folder()
+        files = ['census.xlsx', 'births.csv', 'population.csv']
+        for file in files:
+            open(os.path.join('tests', 'data', file), 'w').close()
+        input_file_name = ['census.xlsx', 'births.csv', 'population.csv']
+        input_files = [os.path.join('tests', 'data', file)
+                       for file in input_file_name]
+        with pytest.raises(TypeError):
+            popro.Popro(path_census=input_files[0],
+                        path_births=input_files[1],
+                        path_population=input_files[2],
+                        year_census=2010)
+        delete_data_folder()
+
+        # wrong input births file
+        create_data_folder()
+        files = ['census.csv', 'births.xlsx', 'population.csv']
+        for file in files:
+            open(os.path.join('tests', 'data', file), 'w').close()
+        input_file_name = ['census.csv', 'births.xlsx', 'population.csv']
+        input_files = [os.path.join('tests', 'data', file)
+                       for file in input_file_name]
+        with pytest.raises(TypeError):
+            popro.Popro(path_census=input_files[0],
+                        path_births=input_files[1],
+                        path_population=input_files[2],
+                        year_census=2010)
+        delete_data_folder()
+
+        # wrong input population file
+        create_data_folder()
+        files = ['census.csv', 'births.csv', 'population.xlsx']
+        for file in files:
+            open(os.path.join('tests', 'data', file), 'w').close()
+        input_file_name = ['census.csv', 'births.csv', 'population.xlsx']
+        input_files = [os.path.join('tests', 'data', file)
+                       for file in input_file_name]
+        with pytest.raises(TypeError):
+            popro.Popro(path_census=input_files[0],
+                        path_births=input_files[1],
+                        path_population=input_files[2],
+                        year_census=2010)
+        delete_data_folder()
+
 class Test_get_project_engine:
     def test_via_births_2019_8(self):
 
