@@ -171,7 +171,6 @@ class Test_dataset:
         except ValueError:
             raise pytest.fail("Raise {0}".format(ValueError))
 
-
     def test_dataset_census_columns_fail(self):
         df_census = pd.DataFrame(data=[[0, 100, 1100015, 2010],
                                        [1, 200, 1100015, 2010]],
@@ -190,7 +189,6 @@ class Test_dataset:
         except ValueError:
             raise pytest.fail("Raise {0}".format(ValueError))
 
-
     def test_dataset_births_columns_fail(self):
         df_births = pd.DataFrame(data=[[2011, 1100015, 128],
                                        [2012, 1100015, 141]],
@@ -198,6 +196,24 @@ class Test_dataset:
                                  )
         with pytest.raises(ValueError):
             popro.validate_dataset_births(df_births)
+
+    def test_dataset_population_columns_ok(self):
+        df_population = pd.DataFrame(data=[[2011, 1100015, 2939],
+                                           [2012, 1100015, 2897]],
+                                     columns=['year', 'place', 'population']
+                                    )
+        try:
+            popro.validate_dataset_population(df_population)
+        except ValueError:
+            raise pytest.fail("Raise {0}".format(ValueError))
+
+    def test_dataset_population_columns_fail(self):
+        df_population = pd.DataFrame(data=[[2011, 1100015, 2939],
+                                           [2012, 1100015, 2897]],
+                                     columns=['year', 'place', 'peoples']
+                                    )
+        with pytest.raises(ValueError):
+            popro.validate_dataset_population(df_population)
 
 class Test_get_pop_place_census_age:
     def test_none_register_found(self):
