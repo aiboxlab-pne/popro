@@ -180,6 +180,25 @@ class Test_dataset:
         with pytest.raises(ValueError):
             popro.validate_dataset_census(df_census)
 
+    def test_dataset_births_columns_ok(self):
+        df_births = pd.DataFrame(data=[[2011, 1100015, 128],
+                                       [2012, 1100015, 141]],
+                                 columns=['year', 'place', 'births']
+                                 )
+        try:
+            popro.validate_dataset_births(df_births)
+        except ValueError:
+            raise pytest.fail("Raise {0}".format(ValueError))
+
+
+    def test_dataset_births_columns_fail(self):
+        df_births = pd.DataFrame(data=[[2011, 1100015, 128],
+                                       [2012, 1100015, 141]],
+                                 columns=['year', 'place', 'born']
+                                 )
+        with pytest.raises(ValueError):
+            popro.validate_dataset_births(df_births)
+
 class Test_get_pop_place_census_age:
     def test_none_register_found(self):
         list_dict = [
