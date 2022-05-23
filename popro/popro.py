@@ -276,6 +276,13 @@ def validate_dataset_births(df_births):
     )
 
 
+def validate_dataset_population(df_population):
+
+    validate_dataset_columns(
+        df_population, "df_population", set(["year", "place", "population"])
+    )
+
+
 def save_report(list_dict, path_report):
 
     df_report = pd.DataFrame(list_dict)
@@ -286,7 +293,7 @@ def save_report(list_dict, path_report):
 def is_csv(file_path):
 
     extension = splitext(file_path)[1][1:]
-    return extension == 'csv'
+    return extension == "csv"
 
 
 class Popro:
@@ -332,11 +339,17 @@ class Popro:
         self.df_census = pd.read_csv(path_census)
         self.df_births = pd.read_csv(path_births)
         self.df_population = pd.read_csv(path_population)
+
+        validate_dataset_census(self.df_census)
+        validate_dataset_births(self.df_births)
+        validate_dataset_population(self.df_population)
+
         self.datasets = {
             "df_census": self.df_census,
             "df_births": self.df_births,
             "df_population": self.df_population,
         }
+
         self.report_projection = [{}]
         self.report_error = [{}]
 
