@@ -5,40 +5,17 @@ from email.policy import default
 
 import click
 
-from popro import popro
+from popro import engines, popro
 
 
 @click.command()
 @click.option(
-    "-ic",
-    "--input_census",
-    "path_census",
+    "-i",
+    "--input",
+    "path_file",
     type=click.STRING,
-    help="Path to the census dataset in csv file. "
-    + "Columns required: age, population, place, year",
-)
-@click.option(
-    "-ib",
-    "--input_birth",
-    "path_births",
-    type=click.STRING,
-    help="Path to the births dataset in csv file. "
-    + "Columns required: year, place, births",
-)
-@click.option(
-    "-ip",
-    "--input_population",
-    "path_population",
-    type=click.STRING,
-    help="Path to the population dataset in csv file. "
-    + "Columns required: year, place, population",
-)
-@click.option(
-    "-yc",
-    "--year_census",
-    "year_census",
-    type=click.INT,
-    help="Year of the census dataset.",
+    multiple=True,
+    help="Path to a input file.",
 )
 @click.option(
     "-y", "--year", "year", type=click.INT, help="Year of projection."
@@ -72,30 +49,35 @@ from popro import popro
     help="Show the algebraic expression of the calculus",
 )
 def main(
-    path_census,
-    path_births,
-    path_population,
-    year_census,
+    path_file,
     year,
     place,
     age,
     output_path="",
     output_error="",
     verbose=False,
+    engine=engines.tceduca.Tceduca,
 ):
     """Console script for popro."""
-    if path_census is None:
+    if path_file is None:
         click.echo("For help, type: popro --help")
         return
+    dict_input = {}
+    for file_input in path_file:
+        list_input_info = file_input.split(",")
+        if len(list_input_info) != 2:
+            raise ValueError(
+                f'The input file must be in the format: "input_name,file_path"\nInformed parameter: {file_input}'
+            )
+        dict_input[list_input_info[0]] = list_input_info[1]
+    dict_input["year_census"] = int(dict_input["year_census"])
+    age = int(age)
 
-    engine = popro.Popro(
-        path_census, path_births, path_population, year_census
-    )
-
+    engine_projection = popro.Popro(dict_input, engine)
     if output_path != "":
-        engine.project_all(output_path, output_error)
+        engine_projection.project_all(output_path, output_error)
     else:
-        population = engine.project(year, place, age, verbose)
+        population = engine_projection.project(year, place, age, verbose)
         click.echo(population)
 
 

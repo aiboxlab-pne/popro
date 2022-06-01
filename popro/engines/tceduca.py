@@ -48,9 +48,11 @@ class Tceduca(Engine):
         if not isinstance(self.year_census, int):
             raise TypeError('"year_census" must be an integer')
 
-        self.df_census = pd.read_csv(self.path_census)
-        self.df_births = pd.read_csv(self.path_births)
-        self.df_population = pd.read_csv(self.path_population)
+        self.df_census = pd.read_csv(self.path_census, dtype={"place": str})
+        self.df_births = pd.read_csv(self.path_births, dtype={"place": str})
+        self.df_population = pd.read_csv(
+            self.path_population, dtype={"place": str}
+        )
 
         validate_dataset_census(self.df_census)
         validate_dataset_births(self.df_births)
