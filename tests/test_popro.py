@@ -2,6 +2,7 @@
 
 """Tests for `popro` package."""
 
+import csv
 import os
 import shutil
 from pathlib import Path
@@ -10,8 +11,9 @@ import pandas as pd
 import pytest
 from click.testing import CliRunner
 
-from popro import cli, popro
+from popro import cli, engines, popro
 
+# from popro import cli, engines, popro
 
 def create_data_folder():
 
@@ -25,34 +27,72 @@ def delete_data_folder():
     folder_path = os.path.join('tests', 'data')
     shutil.rmtree(folder_path, ignore_errors=True)
 
-
+def write_csv(file_path, list_data):
+    with open(file_path, 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        for line in list_data:
+            writer.writerow(line)
 class Test_popro_class:
     def test_input_file_not_found(self):
         create_data_folder()
-        files = ['census.csv', 'births.csv', 'population.csv']
-        for file in files:
-            open(os.path.join('tests', 'data', file), 'w').close()
+
+        data_census = [['age', 'population', 'place', 'year'],
+                       [0, 100,  'ny', 2010],
+                       [1, 110,  'ny', 2010],
+                       [2, 105,  'ny', 2010],
+                       [3, 102,  'ny', 2010]]
+        path_census = os.path.join('tests', 'data', 'census.csv')
+        write_csv(path_census, data_census)
+
+        data_births = [['births', 'place', 'year'],
+                       [102,'ny',2011],
+                       [116,'ny',2012],
+                       [94,'ny',2013],
+                       [123,'ny',2014],
+                       [156,'ny',2015]]
+        path_births = os.path.join('tests', 'data', 'births.csv')
+        write_csv(path_births, data_births)
+
+        data_population = [['population', 'place', 'year'],
+                           [2031, 'ny', 2010],
+                           [2100, 'ny', 2011],
+                           [2050, 'ny', 2012],
+                           [2040, 'ny', 2013],
+                           [2090, 'ny', 2014],
+                           [1950, 'ny', 2015]]
+        path_population = os.path.join('tests', 'data', 'population.csv')
+        write_csv(path_population, data_population)
+
         with pytest.raises(FileNotFoundError):
             input_file_name = ['censusx.csv', 'births.csv', 'population.csv']
             input_files = [os.path.join('tests', 'data', file)
                            for file in input_file_name]
-
-            popro.Popro(path_census=input_files[0],
-                        path_births=input_files[1],
-                        path_population=input_files[2],
-                        year_census=2010)
-
-        with pytest.raises(FileNotFoundError):
-            popro.Popro(path_census='census.csv',
-                        path_births='birthsx.csv',
-                        path_population='population.csv',
-                        year_census=2010)
+            dict_input = {'path_census': input_files[0],
+                          'path_births': input_files[1],
+                          'path_population': input_files[2],
+                          'year_census': 2010}
+            popro.Popro(dict_input)
 
         with pytest.raises(FileNotFoundError):
-            popro.Popro(path_census='census.csv',
-                        path_births='births.csv',
-                        path_population='populationx.csv',
-                        year_census=2010)
+            input_file_name = ['census.csv', 'birthsx.csv', 'population.csv']
+            input_files = [os.path.join('tests', 'data', file)
+                           for file in input_file_name]
+            dict_input = {'path_census': input_files[0],
+                          'path_births': input_files[1],
+                          'path_population': input_files[2],
+                          'year_census': 2010}
+            popro.Popro(dict_input)
+
+
+        with pytest.raises(FileNotFoundError):
+            input_file_name = ['census.csv', 'births.csv', 'populationx.csv']
+            input_files = [os.path.join('tests', 'data', file)
+                           for file in input_file_name]
+            dict_input = {'path_census': input_files[0],
+                          'path_births': input_files[1],
+                          'path_population': input_files[2],
+                          'year_census': 2010}
+            popro.Popro(dict_input)
         delete_data_folder()
 
     def test_input_file_empty(self):
@@ -61,14 +101,16 @@ class Test_popro_class:
         files = ['census.csv', 'births.csv', 'population.csv']
         for file in files:
             open(os.path.join('tests', 'data', file), 'w').close()
+
         input_file_name = ['census.csv', 'births.csv', 'population.csv']
         input_files = [os.path.join('tests', 'data', file)
-                       for file in input_file_name]
+                        for file in input_file_name]
+        dict_input = {'path_census': input_files[0],
+                      'path_births': input_files[1],
+                      'path_population': input_files[2],
+                      'year_census': 2010}
         with pytest.raises(pd.errors.EmptyDataError):
-            popro.Popro(path_census=input_files[0],
-                        path_births=input_files[1],
-                        path_population=input_files[2],
-                        year_census=2010)
+            popro.Popro(dict_input)
 
         delete_data_folder()
 
@@ -122,39 +164,39 @@ class Test_popro_class:
 class Test_get_project_engine:
     def test_via_births_2019_8(self):
 
-        project_engine = popro.get_projection_engine(
+        project_engine = engines.tceduca.get_projection_engine(
             year=2019, age=8, year_census=2010
         )
-        assert project_engine == popro.via_births
+        assert project_engine == engines.tceduca.via_births
 
     def test_via_census_2019_9(self):
 
-        project_engine = popro.get_projection_engine(
+        project_engine = engines.tceduca.get_projection_engine(
             year=2019, age=9, year_census=2010
         )
-        assert project_engine == popro.via_census
+        assert project_engine == engines.tceduca.via_census
 
     def test_via_census_2019_10(self):
 
-        project_engine = popro.get_projection_engine(
+        project_engine = engines.tceduca.get_projection_engine(
             year=2019, age=10, year_census=2010
         )
-        assert project_engine == popro.via_census
+        assert project_engine == engines.tceduca.via_census
 
     def test_year_census_smaller_than_year(self):
 
         with pytest.raises(ValueError):
-            popro.get_projection_engine(year=2009, age=10, year_census=2010)
+            engines.tceduca.get_projection_engine(year=2009, age=10, year_census=2010)
 
     def test_age_smaller_than_0(self):
 
         with pytest.raises(ValueError):
-            popro.get_projection_engine(year=2019, age=-1, year_census=2010)
+            engines.tceduca.get_projection_engine(year=2019, age=-1, year_census=2010)
 
     def test_age_equal_0(self):
 
         try:
-            popro.get_projection_engine(year=2019, age=0, year_census=2010)
+            engines.tceduca.get_projection_engine(year=2019, age=0, year_census=2010)
         except ValueError:
             raise pytest.fail("Raise {0}".format(ValueError))
 
@@ -167,7 +209,7 @@ class Test_dataset:
                                  columns=["age", "population", "place", "year"]
                                  )
         try:
-            popro.validate_dataset_census(df_census)
+            engines.tceduca.validate_dataset_census(df_census)
         except ValueError:
             raise pytest.fail("Raise {0}".format(ValueError))
 
@@ -177,7 +219,7 @@ class Test_dataset:
                                  columns=["age", "population", "local", "year"]
                                  )
         with pytest.raises(ValueError):
-            popro.validate_dataset_census(df_census)
+            engines.tceduca.validate_dataset_census(df_census)
 
     def test_dataset_births_columns_ok(self):
         df_births = pd.DataFrame(data=[[2011, 1100015, 128],
@@ -185,7 +227,7 @@ class Test_dataset:
                                  columns=['year', 'place', 'births']
                                  )
         try:
-            popro.validate_dataset_births(df_births)
+            engines.tceduca.validate_dataset_births(df_births)
         except ValueError:
             raise pytest.fail("Raise {0}".format(ValueError))
 
@@ -195,7 +237,7 @@ class Test_dataset:
                                  columns=['year', 'place', 'born']
                                  )
         with pytest.raises(ValueError):
-            popro.validate_dataset_births(df_births)
+            engines.tceduca.validate_dataset_births(df_births)
 
     def test_dataset_population_columns_ok(self):
         df_population = pd.DataFrame(data=[[2011, 1100015, 2939],
@@ -203,7 +245,7 @@ class Test_dataset:
                                      columns=['year', 'place', 'population']
                                     )
         try:
-            popro.validate_dataset_population(df_population)
+            engines.tceduca.validate_dataset_population(df_population)
         except ValueError:
             raise pytest.fail("Raise {0}".format(ValueError))
 
@@ -213,7 +255,7 @@ class Test_dataset:
                                      columns=['year', 'place', 'peoples']
                                     )
         with pytest.raises(ValueError):
-            popro.validate_dataset_population(df_population)
+            engines.tceduca.validate_dataset_population(df_population)
 
 class Test_get_pop_place_census_age:
     def test_none_register_found(self):
@@ -239,7 +281,7 @@ class Test_get_pop_place_census_age:
         ]
         df_census = pd.DataFrame(list_dict)
         with pytest.raises(ValueError):
-            popro.get_pop_place_census_age(
+            engines.tceduca.get_pop_place_census_age(
                 df_census=df_census, place=1100015, age=3
             )
 
@@ -252,7 +294,7 @@ class Test_get_pop_place_census_age:
             {"age": 2, "population": 150, "place": 1100015, "year": 2010}
             ]
         df_census = pd.DataFrame(list_df)
-        qtd=popro.get_pop_place_census_age(df_census=df_census, place=1100015,age=2)
+        qtd=engines.tceduca.get_pop_place_census_age(df_census=df_census, place=1100015,age=2)
         assert qtd == 150
 
     def test_multiple_register_found(self):
@@ -265,7 +307,7 @@ class Test_get_pop_place_census_age:
             ]
         df_census = pd.DataFrame(list_df)
         with pytest.raises(ValueError):
-            popro.get_pop_place_census_age(df_census=df_census, place=1100015,age=2)
+            engines.tceduca.get_pop_place_census_age(df_census=df_census, place=1100015,age=2)
 
         # def test_command_line_interface():
         #     """Test the CLI."""
