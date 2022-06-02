@@ -71,7 +71,9 @@ def main(
             )
         dict_input[list_input_info[0]] = list_input_info[1]
     dict_input["year_census"] = int(dict_input["year_census"])
-    age = int(age)
+
+    if age is not None:
+        age = int(age)
 
     engine_projection = popro.Popro(dict_input, engine)
     if output_path != "":
