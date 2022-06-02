@@ -74,7 +74,7 @@ First let's generate Input CSV files to serve as a sample.
                       [2090, 'ny', 2014],
                       [1950, 'ny', 2015]]
 
-   write_csv(file_path='birth.csv', list_data=data_birth)
+   write_csv(file_path='births.csv', list_data=data_birth)
    write_csv(file_path='census.csv', list_data=data_census)
    write_csv(file_path='population.csv', list_data=data_population)
 
@@ -82,12 +82,10 @@ Now let's import the lib Popro and generate our projection engine.
 
 .. code-block:: python
 
-   import popro
+   from popro import popro
 
-   engine = popro.Popro(path_census='census.csv',
-                        path_births='birth.csv',
-                        path_population='population.csv',
-                        year_census=2010)
+   dict_input = {'path_census': 'census.csv', 'path_births': 'births.csv', 'path_population': 'population.csv', 'year_census': 2010}
+   engine = popro.Popro(dict_input)
 
 We are ready! Let's start by doing some punctual projections of year, age and place.
 
@@ -173,15 +171,14 @@ It is also possible to make projections via command line. Let's repeat the same 
 
 .. code-block:: text
 
-    $ popro --input_census census.csv --input_birth birth.csv --input_population population.csv --year_census 2010 --year 2015 --place ny --age 4
-
+    $ popro -i path_census,census.csv -i path_births,births.csv -i path_population,population.csv -i year_census,2010 --year 2015 --place ny --age 4
 .. code-block:: text
 
     94.71428571428572
 
 .. code-block:: text
 
-    $ popro --input_census census.csv --input_birth birth.csv --input_population population.csv --year_census 2010 --output projection_report.csv
+    $ popro -i path_census,census.csv -i path_births,births.csv -i path_population,population.csv -i year_census,2010 --output projection_report.csv
 
 .. _`Court of Auditors`: https://www.tcesc.tc.br/
 .. _`Memo. DAE n° 020/2021`: https://www.tcesc.tc.br/sites/default/files/2021-06/Metodologia%20Estima%C3%A7%C3%A3o%20Populacional.pdf
