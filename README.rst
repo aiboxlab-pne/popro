@@ -163,7 +163,7 @@ It is also possible to make projections via command line. Let's repeat the same 
 
 .. code-block:: text
 
-    $ popro --input_census census.csv --input_birth birth.csv --input_population population.csv --year_census 2010 --year 2012 --place ny --age 3
+    $ popro -i path_census,census.csv -i path_births,births.csv -i path_population,population.csv -i year_census,2010 --year 2012 --place ny --age 3
 
 .. code-block:: text
 
